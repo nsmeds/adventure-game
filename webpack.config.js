@@ -21,9 +21,9 @@ module.exports = {
             exclude: /node_modules/
         }],
         loaders: [{
-            test: /\.css$/,
+            test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel',
+            loader: 'babel-loader',
             query: {
                 presets: ['es2015'],
                 // cacheDirectory: true,
