@@ -32,6 +32,7 @@ function buildGame(room) {
 
     connect(room.startRoom, 'n', room.finalRoom);
     connect(room.startRoom, 's', room.storeRoom);
+    room.storeRoom.items.push(item);
 };
 
 buildGame(room);
