@@ -47,5 +47,8 @@
   "bugs": {
     "url": "https://github.com/QuantumArchive/adventure-game/issues"
   },
-  "homepage": "https://github.com/QuantumArchive/adventure-game#readme"
+  "homepage": "https://github.com/QuantumArchive/adventure-game#readme",
+  "engines": {
+    "node": "6.9.1"
+  }
 }
