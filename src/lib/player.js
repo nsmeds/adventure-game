@@ -1,4 +1,5 @@
-import Room from 'Room';
+// import Room from 'Room';
+const Room = require('./room');
 
 const thePlayer = {
     inventory: [],
@@ -33,6 +34,6 @@ const thePlayer = {
     }
 };
 
-export default thePlayer;
+// export default thePlayer;
 
-// module.exports = thePlayer;
+module.exports = thePlayer;
