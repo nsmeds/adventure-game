@@ -3,4 +3,5 @@ const item = {
     location: ''
 };
 
-export default item;
+// export default item;
+module.exports = item;
