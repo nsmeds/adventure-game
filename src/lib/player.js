@@ -1,17 +1,38 @@
+import Room from 'Room';
 
 const thePlayer = {
     inventory: [],
     location: {},
-    action(cmd){
-        let theActions = cmd.split(' ');
-        if (theActions[0] = 'get') {
-            this.inventory.push(theActions[1]);
-        } else {
-            this.location = theActions[0].location;
+
+    action(actions){
+        let message = '';
+        let cmd = actions.split(' ');
+        let theAction = cmd[0];
+
+        if (theAction === 'take') {
+            let itemName = cmd[1];
+            this.inventory.push(itemName);
+            message = 'You added ' + itemName + ' to your inventory.';
+        } else if (theAction === 'drop') {
+            let itemName = cmd[1];
+            if (itemName.toLowerCase() === 'all') {
+                this.inventory = [];
+                message = 'You dropped all your inventory.';
+            } else {
+                let itemIdx = this.inventory.indexOf(itemName);
+                if (itemIdx > -1) this.inventory.splice(itemIdx, 1);
+                message = 'You no longer have ' + itemName + ' in your inventory';
+            };
+        } else if (theAction === 'use') {
+            message = 'You are using the ' + cmd[1] + '.';
+        } else if (theAction === 'go') {
+            this.location = Room.move(cmd[1]);
+            message = 'You are now in the ' + this.location;
         };
+        return message;
     }
 };
 
-// export default thePlayer;
+export default thePlayer;
 
-module.exports = thePlayer;
+// module.exports = thePlayer;

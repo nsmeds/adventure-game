@@ -38,3 +38,5 @@ const helpOpts = {
         }
     ]
 };
+
+export default helpOpts;
