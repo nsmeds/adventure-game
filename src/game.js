@@ -1,10 +1,10 @@
-// import item from './lib/item';
-// import player from './lib/player';
-// import room from './lib/room';
+import item from './lib/item';
+import player from './lib/player';
+import room from './lib/room';
 
-const item = require('./lib/item');
-const player = require('./lib/player');
-const room = require('./lib/room');
+// const item = require('./lib/item');
+// const player = require('./lib/player');
+// const room = require('./lib/room');
 
 function buildGame(rooms, players, items) {
     function opposite(direction) {
@@ -35,8 +35,10 @@ function buildGame(rooms, players, items) {
 
 buildGame(room, player, item);
 
-console.log(room);
-console.log(player);
-console.log(item);
+// console.log(room);
+// console.log(player);
+// console.log(item);
 
-module.exports = {room, item, player};
+// module.exports = {room, item, player};
+
+export {room, item, player};
