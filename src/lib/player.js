@@ -12,4 +12,6 @@ const thePlayer = {
     }
 };
 
-export default thePlayer;
+// export default thePlayer;
+
+module.exports = thePlayer;
