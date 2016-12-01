@@ -39,4 +39,4 @@ buildGame(room);
 
 console.log(room);
 
-module.exports = {room, item, player}
+module.exports = {room, item, player};
