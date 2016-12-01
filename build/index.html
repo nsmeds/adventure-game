@@ -5,6 +5,12 @@
     <title>Document</title>
 </head>
 <body>
-    <section></section>
+    <section ng-controller="myGame">
+        <div ng-model="newText">
+            {{userAction}}
+        </div>
+        <hr>
+        <input type="text" ng-model="userAction">
+    </section>
 <script type="text/javascript" src="main.js"></script></body>
 </html>
