@@ -6,11 +6,7 @@ const item = require('./lib/item');
 const player = require('./lib/player');
 const room = require('./lib/room');
 
-console.log(room);
-console.log(player);
-console.log(item);
-
-function buildGame(room) {
+function buildGame(rooms, players, items) {
     function opposite(direction) {
         if (direction === 'n') {
             return 's';
@@ -30,13 +26,17 @@ function buildGame(room) {
         secondRoom[opposite(direction)] = firstRoom;
     };
 
-    connect(room.startRoom, 'n', room.finalRoom);
-    connect(room.startRoom, 's', room.storeRoom);
-    room.storeRoom.items.push(item);
+    connect(rooms.startRoom, 'n', rooms.finalRoom);
+    connect(rooms.startRoom, 's', rooms.storeRoom);
+    rooms.storeRoom.items.push(items);
+    items.location = room.storeRoom;
+    players.location = room.startRoom;
 };
 
-buildGame(room);
+buildGame(room, player, item);
 
 console.log(room);
+console.log(player);
+console.log(item);
 
 module.exports = {room, item, player};

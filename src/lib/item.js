@@ -1,6 +1,6 @@
 const item = {
     name: 'Baseball bat',
-    location: ''
+    location: {}
 };
 
 // export default item;
