@@ -1,4 +1,7 @@
 import angular from 'angular';
+import {room, item, player} from './game';
+
+console.log(player);
 
 const app = angular.module('myApp', []);
 
@@ -9,3 +12,4 @@ app.controller('myGame', ['$scope', function($scope) {
 }]);
 
 export default app;
+// module.exports = app;
