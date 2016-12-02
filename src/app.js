@@ -14,7 +14,7 @@ app.controller('myGame', ['$scope', function($scope) {
     $scope.userItem = $scope.choices.name;
     $scope.newText = '';
     $scope.playerHistory = [];
-    $scope.playerHistory.push('You are waking up after being unconcious....');
+    $scope.playerHistory.push('You are waking up after being unconscious....');
     $scope.playerHistory.push(player.location.desc);
     $scope.room = room;
     $scope.item = item;
@@ -28,15 +28,18 @@ app.controller('movementController', ['$scope', '$location', '$anchorScroll', fu
         $anchorScroll();
     };
     $scope.buttonClicked = function(cmd){
-        // console.log(cmd);
-        // console.log(player);
-        // console.log($scope.playerHistory);
         $scope.playerHistory.push($scope.player.action(cmd));
         $scope.scrollDown();
     };
 
 }]);
 
+app.controller('itemController', ['$scope', function($scope) {
+    itemName = $scope.item.name;
+    $scope.buttonClicked = function(cmd){
+        $scope.playerHistory.push($scope.player.action(cmd + ' ' + itemName));
+    }
+}])
 
 export default app;
 // module.exports = app;
