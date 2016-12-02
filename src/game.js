@@ -29,6 +29,7 @@ function buildGame(rooms, players, items) {
     connect(rooms.startRoom, 'n', rooms.finalRoom);
     connect(rooms.startRoom, 's', rooms.storeRoom);
     rooms.storeRoom.items.push(items);
+    // console.log('storeRoom items', rooms.storeRoom.items);
     items.location = room.storeRoom;
     players.location = room.startRoom;
 };
@@ -36,7 +37,7 @@ function buildGame(rooms, players, items) {
 buildGame(room, player, item);
 
 // console.log(room);
-// console.log(player);
+// console.log('player', player);
 // console.log(item);
 
 // module.exports = {room, item, player};
