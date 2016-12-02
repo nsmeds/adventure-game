@@ -1,3 +1,20 @@
+html {
+    height: 100%;
+} 
+
+body {
+    height: 100%;
+}
+
+section {
+    height: 100%;
+}
+
+#textarea {
+    height: calc(100% - 70px);
+    word-wrap: break-word;
+}
+
 #bottom-container {
-    margin-top: 3em;
+    height: 50px;
 }
