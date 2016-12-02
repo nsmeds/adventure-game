@@ -28,19 +28,19 @@ const helpOpts = {
         {
             title: 'choiceTakeItem',
             name: 'Take Item',
-            command: 'take item',
+            command: 'take',
             type: 'item'
         },
         {
             title: 'choiceDropItem',
             name: 'Drop Item',
-            command: 'drop item',
+            command: 'drop',
             type: 'item'
         },
         {
             title: 'choiceUseItem',
             name: 'Use Item',
-            command: 'use item',
+            command: 'use',
             type: 'item'
         }
     ]
