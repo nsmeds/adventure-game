@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "webpack-dev-server --inline",
-    "build": "webpack"
+    "build": "webpack",
+    "karma": "karma start"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,7 @@
   ],
   "author": "Chris Bruner, John Gothro, and Niilo Smeds",
   "license": "MIT",
-    "devDependencies": {
+  "devDependencies": {
     "angular-mocks": "^1.5.9",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
