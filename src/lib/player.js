@@ -13,7 +13,9 @@ const thePlayer = {
         if (theAction === 'take') {
             let itemName = cmd[1];
             this.inventory.push(itemName);
-            message = 'You added ' + itemName + ' to your inventory.';
+            let itemIdx = this.location.items.indexOf(itemName);
+            this.location.items.splice(itemIdx, 1);
+            message = 'You added a ' + itemName + ' to your inventory.';
         } else if (theAction === 'drop') {
             let itemName = cmd[1];
             if (itemName.toLowerCase() === 'all') {
@@ -22,7 +24,7 @@ const thePlayer = {
             } else {
                 let itemIdx = this.inventory.indexOf(itemName);
                 if (itemIdx > -1) this.inventory.splice(itemIdx, 1);
-                message = 'You no longer have ' + itemName + ' in your inventory';
+                message = 'You no longer have a ' + itemName + ' in your inventory.';
             };
         } else if (theAction === 'use') {
             message = 'You are using the ' + cmd[1] + '.';

@@ -1,5 +1,5 @@
 const item = {
-    name: 'Baseball bat',
+    name: 'baseball-bat',
     location: {}
 };
 
