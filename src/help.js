@@ -4,37 +4,44 @@ const helpOpts = {
         {
             title: 'choiceNorth',
             name: 'Move North',
-            command: 'go n'
+            command: 'go n',
+            type: 'movement'
         },
         {
             title: 'choiceSouth',
             name: 'Move South',
-            command: 'go s'
+            command: 'go s',
+            type: 'movement'
         },
         {
             title: 'choiceEast',
             name: 'Move East',
-            command: 'go e'
+            command: 'go e',
+            type: 'movement'
         },
         {
             title: 'choiceWest',
             name: 'Move West',
-            command: 'go w'
+            command: 'go w',
+            type: 'movement'
         },
         {
             title: 'choiceTakeItem',
             name: 'Take Item',
-            command: 'take item'
+            command: 'take item',
+            type: 'item'
         },
         {
             title: 'choiceDropItem',
             name: 'Drop Item',
-            command: 'drop item'
+            command: 'drop item',
+            type: 'item'
         },
         {
             title: 'choiceUseItem',
             name: 'Use Item',
-            command: 'use item'
+            command: 'use item',
+            type: 'item'
         }
     ]
 };
