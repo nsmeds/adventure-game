@@ -1,4 +1,4 @@
-import Room from './room';
+// import Room from './room';
 // const Room = require('./room');
 
 const thePlayer = {
@@ -27,8 +27,10 @@ const thePlayer = {
         } else if (theAction === 'use') {
             message = 'You are using the ' + cmd[1] + '.';
         } else if (theAction === 'go') {
-            this.location = Room.move(cmd[1]);
-            message = 'You are now in the ' + this.location;
+            let response = this.location.move(cmd[1]);
+            if (response.room) this.location = response.room;
+            // this.location = response.room;
+            message = response.text;
         };
         return message;
     }
