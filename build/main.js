@@ -54,17 +54,50 @@
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
+	var _game = __webpack_require__(3);
+	
+	var _help = __webpack_require__(7);
+	
+	var _help2 = _interopRequireDefault(_help);
+	
+	__webpack_require__(8);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var app = _angular2.default.module('myApp', []);
+	// console.log(player);
+	
+	var app = _angular2.default.module('myApp', ['ng']);
 	
 	app.controller('myGame', ['$scope', function ($scope) {
-	    $scope.userAction = 'wha';
-	    $scope.newText = $scope.userAction;
+	    $scope.player = _game.player;
+	    $scope.choices = _help2.default.allChoices;
+	    $scope.userMovement = $scope.choices.name;
+	    $scope.userItem = $scope.choices.name;
+	    $scope.newText = '';
 	    $scope.playerHistory = [];
+	    $scope.playerHistory.push('You are waking up after being unconcious....');
+	    $scope.playerHistory.push(_game.player.location.desc);
+	    $scope.room = _game.room;
+	    $scope.item = _game.item;
+	}]);
+	
+	app.controller('movementController', ['$scope', '$location', '$anchorScroll', function ($scope, $location, $anchorScroll) {
+	    $scope.currentRoom = '';
+	    $scope.scrollDown = function () {
+	        $location.hash('bottom');
+	        $anchorScroll();
+	    };
+	    $scope.buttonClicked = function (cmd) {
+	        // console.log(cmd);
+	        // console.log(player);
+	        // console.log($scope.playerHistory);
+	        $scope.playerHistory.push($scope.player.action(cmd));
+	        $scope.scrollDown();
+	    };
 	}]);
 	
 	exports.default = app;
+	// module.exports = app;
 
 /***/ },
 /* 1 */
@@ -32462,6 +32495,263 @@
 	})(window);
 	
 	!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.player = exports.item = exports.room = undefined;
+	
+	var _item = __webpack_require__(4);
+	
+	var _item2 = _interopRequireDefault(_item);
+	
+	var _player = __webpack_require__(5);
+	
+	var _player2 = _interopRequireDefault(_player);
+	
+	var _room = __webpack_require__(6);
+	
+	var _room2 = _interopRequireDefault(_room);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	// const item = require('./lib/item');
+	// const player = require('./lib/player');
+	// const room = require('./lib/room');
+	
+	function buildGame(rooms, players, items) {
+	    function opposite(direction) {
+	        if (direction === 'n') {
+	            return 's';
+	        } else if (direction === 's') {
+	            return 'n';
+	        } else if (direction === 'w') {
+	            return 'e';
+	        } else if (direction === 'e') {
+	            return 'w';
+	        } else {
+	            return null;
+	        };
+	    };
+	
+	    function connect(firstRoom, direction, secondRoom) {
+	        firstRoom[direction] = secondRoom;
+	        secondRoom[opposite(direction)] = firstRoom;
+	    };
+	
+	    connect(rooms.startRoom, 'n', rooms.finalRoom);
+	    connect(rooms.startRoom, 's', rooms.storeRoom);
+	    rooms.storeRoom.items.push(items);
+	    items.location = _room2.default.storeRoom;
+	    players.location = _room2.default.startRoom;
+	};
+	
+	buildGame(_room2.default, _player2.default, _item2.default);
+	
+	// console.log(room);
+	// console.log(player);
+	// console.log(item);
+	
+	// module.exports = {room, item, player};
+	
+	exports.room = _room2.default;
+	exports.item = _item2.default;
+	exports.player = _player2.default;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var item = {
+	    name: 'Baseball bat',
+	    location: {}
+	};
+	
+	exports.default = item;
+	// module.exports = item;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	// import Room from './room';
+	// const Room = require('./room');
+	
+	var thePlayer = {
+	    inventory: [],
+	    location: {},
+	
+	    action: function action(actions) {
+	        var message = '';
+	        var cmd = actions.split(' ');
+	        var theAction = cmd[0];
+	
+	        if (theAction === 'take') {
+	            var itemName = cmd[1];
+	            this.inventory.push(itemName);
+	            message = 'You added ' + itemName + ' to your inventory.';
+	        } else if (theAction === 'drop') {
+	            var _itemName = cmd[1];
+	            if (_itemName.toLowerCase() === 'all') {
+	                this.inventory = [];
+	                message = 'You dropped all your inventory.';
+	            } else {
+	                var itemIdx = this.inventory.indexOf(_itemName);
+	                if (itemIdx > -1) this.inventory.splice(itemIdx, 1);
+	                message = 'You no longer have ' + _itemName + ' in your inventory';
+	            };
+	        } else if (theAction === 'use') {
+	            message = 'You are using the ' + cmd[1] + '.';
+	        } else if (theAction === 'go') {
+	            var response = this.location.move(cmd[1]);
+	            if (response.room) this.location = response.room;
+	            // this.location = response.room;
+	            message = response.text;
+	        };
+	        return message;
+	    }
+	};
+	
+	exports.default = thePlayer;
+	
+	// module.exports = thePlayer;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Room = function () {
+	    function Room(obj) {
+	        var _this = this;
+	
+	        _classCallCheck(this, Room);
+	
+	        Object.keys(obj).forEach(function (element) {
+	            _this[element] = obj[element];
+	        }, this);
+	        this.items = [];
+	        this.n = this.s = this.e = this.w = null;
+	    }
+	
+	    _createClass(Room, [{
+	        key: 'move',
+	        value: function move(direction) {
+	            var response = { room: this[direction] };
+	            if (!this[direction]) {
+	                response.text = 'Sorry, you can\'t go ' + direction + '!';
+	                return response;
+	            } else {
+	                response.text = this[direction].desc;
+	                if (this.items.length) {
+	                    response.text += '\n You find a ' + this.items[0].name + '.';
+	                };
+	                return response;
+	            };
+	        }
+	    }]);
+	
+	    return Room;
+	}();
+	
+	;
+	
+	Room.startRoom = new Room({
+	    name: 'Starting Room',
+	    desc: 'You are currently located in a a dimly lit room. There is a door to your north and to your south.'
+	});
+	
+	Room.storeRoom = new Room({
+	    name: 'Store Room',
+	    desc: 'You are in a dusty room with lots of boxes strewn around. In the corner is a musty old baseball bat.'
+	});
+	
+	Room.finalRoom = new Room({
+	    name: 'Final Room',
+	    desc: 'Behold, Godzilla sits before you!'
+	});
+	
+	exports.default = Room;
+	// module.exports = Room;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var helpOpts = {
+	    allChoices: [{
+	        title: 'choiceNorth',
+	        name: 'Move North',
+	        command: 'go n',
+	        type: 'movement'
+	    }, {
+	        title: 'choiceSouth',
+	        name: 'Move South',
+	        command: 'go s',
+	        type: 'movement'
+	    }, {
+	        title: 'choiceEast',
+	        name: 'Move East',
+	        command: 'go e',
+	        type: 'movement'
+	    }, {
+	        title: 'choiceWest',
+	        name: 'Move West',
+	        command: 'go w',
+	        type: 'movement'
+	    }, {
+	        title: 'choiceTakeItem',
+	        name: 'Take Item',
+	        command: 'take item',
+	        type: 'item'
+	    }, {
+	        title: 'choiceDropItem',
+	        name: 'Drop Item',
+	        command: 'drop item',
+	        type: 'item'
+	    }, {
+	        title: 'choiceUseItem',
+	        name: 'Use Item',
+	        command: 'use item',
+	        type: 'item'
+	    }]
+	};
+	
+	// export default helpOpts;
+	module.exports = helpOpts;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 /******/ ]);
