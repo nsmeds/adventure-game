@@ -7,7 +7,7 @@
 <body>
     <section ng-controller="myGame">
         <div>
-            <p ng-model="playerHistory" ng-repeat="history in playerHistory">{{history}}</p>
+            <p ng-model="playerHistory" ng-repeat="history in playerHistory track by $index">{{history}}</p>
         </div>
         <hr>
         <div ng-controller="movementController">
@@ -18,5 +18,8 @@
             <button type="button" ng-model="userItem" ng-hide="action.type === 'movement'" ng-repeat="action in choices">{{action.name}}</button>
         </div>
     </section>
+    <div>
+        <a id="bottom"></a>
+    </div>
 </body>
 </html>
