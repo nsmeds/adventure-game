@@ -4,7 +4,7 @@ class Room {
             this[element] = obj[element];
         }, this);
         this.items = [];
-        this.n = this.s = this.e = this.w = null;
+        this.north = this.south = this.east = this.west = null;
     }
     move(direction) {
         let response = {room: this[direction]};

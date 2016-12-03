@@ -8,14 +8,14 @@ import room from './lib/room';
 
 function buildGame(rooms, players, items) {
     function opposite(direction) {
-        if (direction === 'n') {
-            return 's';
-        } else if (direction === 's') {
-            return 'n';
-        } else if (direction === 'w') {
-            return 'e';
-        } else if (direction === 'e') {
-            return 'w';
+        if (direction === 'north') {
+            return 'south';
+        } else if (direction === 'south') {
+            return 'north';
+        } else if (direction === 'west') {
+            return 'east';
+        } else if (direction === 'east') {
+            return 'west';
         } else {
             return null;
         };
@@ -26,8 +26,8 @@ function buildGame(rooms, players, items) {
         secondRoom[opposite(direction)] = firstRoom;
     };
 
-    connect(rooms.startRoom, 'n', rooms.finalRoom);
-    connect(rooms.startRoom, 's', rooms.storeRoom);
+    connect(rooms.startRoom, 'north', rooms.finalRoom);
+    connect(rooms.startRoom, 'south', rooms.storeRoom);
     rooms.storeRoom.items.push(items);
     // console.log('storeRoom items', rooms.storeRoom.items);
     items.location = room.storeRoom;
