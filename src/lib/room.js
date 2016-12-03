@@ -13,8 +13,8 @@ class Room {
             return response;
         } else {
             response.text = this[direction].desc;
-            if (this.items.length) {
-                response.text += `\n You find a ${this.items[0].name}.`;
+            if (this[direction].items.length) {
+                response.text += `\n You find a ${this[direction].items[0].name}.`;
             };
             return response;
         };
@@ -23,17 +23,17 @@ class Room {
 
 Room.startRoom = new Room({
     name: 'Starting Room',
-    desc: 'You are currently located in a a dimly lit room. There is a door to your north and to your south.'
+    desc: 'You are currently located in a a dimly lit room. There is a door to the north and to the south.'
 });
 
 Room.storeRoom = new Room({
     name: 'Store Room',
-    desc: 'You are in a dusty room with lots of boxes strewn around. In the corner is a musty old baseball bat.'
+    desc: 'You are in a dusty room with lots of boxes strewn around. The only door is to the north.'
 });
 
 Room.finalRoom = new Room({
     name: 'Final Room',
-    desc: 'Behold, Godzilla sits before you!'
+    desc: 'Behold, Godzilla sits before you! The only escape is the door to the south.'
 });
 
 export default Room;
