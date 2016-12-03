@@ -8,11 +8,11 @@ const thePlayer = {
         let theAction = actions.command;
         let item = actions.item;
         let direction = actions.direction;
-        console.log('the command:', theAction);
-        console.log('the item is:', item);
-        console.log('the direction is:', direction);
+        // console.log('the command:', theAction);
+        // console.log('the item is:', item);
+        // console.log('the direction is:', direction);
 
-        console.log('The Action is', theAction);
+        // console.log('The Action is', theAction);
 
         if (theAction === 'take') {
             let itemName = item.name;
@@ -36,14 +36,26 @@ const thePlayer = {
                 let itemIdx = this.inventory.indexOf(item);
                 if (itemIdx > -1) {
                     let droppedItem = this.inventory.splice(itemIdx, 1);
-                    console.log('what got dropped:', droppedItem);
+                    // console.log('what got dropped:', droppedItem);
                     this.location.items.push(droppedItem[0]);
-                    console.log('the room has:', this.location.items);
+                    // console.log('the room has:', this.location.items);
                 };
                 message = 'You no longer have a ' + itemName + ' in your inventory.';
             };
         } else if (theAction === 'use') {
-            message = 'You are using the ' + item.name + '.';
+            if (this.location.name === 'Final Room') {
+                if (item.name === 'nothing') {
+                    message = 'You have nothing to use, IDIOT! You better run before Godzilla eats you.'; 
+                } else {
+                    message = 'You hit Godzilla with the ' + item.name + '! Down he goes! Congratulations, you have slayed the mighty beast. The police will be arriving shortly to arrest you for animal cruelty and/or first-degree murder.';
+                };
+            } else {
+                if (item.name === 'nothing') {
+                    message = 'You have nothing to use.';
+                } else {
+                    message = 'You are swinging the ' + item.name + ' by yourself in an empty room. Keep up the good work.';
+                }
+            }
         } else if (theAction === 'go') {
             let response = this.location.move(direction);
             if (response.room) this.location = response.room;
