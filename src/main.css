@@ -1,20 +1,32 @@
-html {
+html, body, section {
     height: 100%;
-} 
-
-body {
-    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
 }
 
 section {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+hr {
+    height: 5px;
+}
+
+.sticky-header, .sticky-footer {
+    flex: 0 0 auto;
+}
+
+.sticky-header {
+    margin-top: 15px;
 }
 
 #textarea {
-    height: calc(100% - 70px);
-    word-wrap: break-word;
+    height: calc(100% - 50px);
+    overflow-y: scroll;
 }
 
 #bottom-container {
-    height: 50px;
+    height: 1px;
+    margin-top: 40px;
 }
