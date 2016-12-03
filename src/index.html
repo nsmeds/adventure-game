@@ -7,11 +7,15 @@
 <body>
     <header>Your Game Here </header>
     <section ng-controller="myGame">
+        <header class="sticky-header">Sticky</header>
         <div id="textarea">
             <p ng-model="playerHistory" ng-repeat="history in playerHistory track by $index">{{history}}</p>
+            <div id="bottom-container">
+                <a id="bottom"></a>
+            </div>
         </div>
         <hr>
-        <div>
+        <div class="sticky-footer">
             <div ng-controller="movementController">
                 <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
                 ng-model="userMovement" ng-hide="action.type === 'item'" ng-repeat="action in choices">{{action.name}}</button>
@@ -20,9 +24,6 @@
                 <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
                 ng-model="userItem" ng-hide="action.type === 'movement'" ng-repeat="action in choices">{{action.name}}</button>
             </div>
-        </div>
-        <div id="bottom-container">
-            <a id="bottom"></a>
         </div>
     </section>
 </body>
