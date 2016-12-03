@@ -47,7 +47,7 @@ const thePlayer = {
                 if (item.name === 'nothing') {
                     message = 'You have nothing to use, IDIOT! You better run before Godzilla eats you.'; 
                 } else {
-                    message = 'You hit Godzilla with the ' + item.name + '! Down he goes! Congratulations, you have slayed the mighty beast. The police will be arriving shortly to arrest you for animal cruelty and/or first-degree murder.';
+                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla reaches for his phone to call the ASPCA.';
                 };
             } else {
                 if (item.name === 'nothing') {
