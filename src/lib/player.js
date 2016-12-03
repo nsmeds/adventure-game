@@ -41,6 +41,7 @@ const thePlayer = {
                     // console.log('the room has:', this.location.items);
                 };
                 message = 'You no longer have a ' + itemName + ' in your inventory.';
+                if (this.location.name === 'Final Room') message += ' You had better pick it back up before Godzilla notices.'; 
             };
         } else if (theAction === 'use') {
             if (this.location.name === 'Final Room') {
