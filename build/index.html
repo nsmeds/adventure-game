@@ -6,20 +6,24 @@
 <link href="styles.css" rel="stylesheet"></head>
 <body>
     <section ng-controller="myGame">
-        <div>
+        <header class="sticky-header">Godzilla Dungeon!</header>
+        <div id="textarea">
             <p ng-model="playerHistory" ng-repeat="history in playerHistory track by $index">{{history}}</p>
+            <div id="bottom-container">
+                <a id="bottom"></a>
+            </div>
         </div>
         <hr>
-        <div ng-controller="movementController">
-            <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
-            ng-model="userMovement" ng-hide="action.type === 'item'" ng-repeat="action in choices">{{action.name}}</button>
-        </div>
-        <div>
-            <button type="button" ng-model="userItem" ng-hide="action.type === 'movement'" ng-repeat="action in choices">{{action.name}}</button>
+        <div class="sticky-footer">
+            <div ng-controller="movementController">
+                <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
+                ng-model="userMovement" ng-hide="action.type === 'item'" ng-repeat="action in choices">{{action.name}}</button>
+            </div>
+            <div ng-controller="itemController">
+                <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
+                ng-model="userItem" ng-hide="action.type === 'movement'" ng-repeat="action in choices">{{action.name}}</button>
+            </div>
         </div>
     </section>
-    <div id="bottom-container">
-        <a id="bottom"></a>
-    </div>
 <script type="text/javascript" src="main.js"></script></body>
 </html>
