@@ -64,40 +64,54 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// console.log(player);
-	
 	var app = _angular2.default.module('myApp', ['ng']);
 	
-	app.controller('myGame', ['$scope', function ($scope) {
+	app.controller('myGame', ['$scope', '$location', '$anchorScroll', function ($scope, $location, $anchorScroll) {
 	    $scope.player = _game.player;
 	    $scope.choices = _help2.default.allChoices;
 	    $scope.userMovement = $scope.choices.name;
 	    $scope.userItem = $scope.choices.name;
 	    $scope.newText = '';
 	    $scope.playerHistory = [];
-	    $scope.playerHistory.push('You are waking up after being unconcious....');
+	    $scope.playerHistory.push('You are waking up after being unconscious....');
 	    $scope.playerHistory.push(_game.player.location.desc);
 	    $scope.room = _game.room;
 	    $scope.item = _game.item;
-	}]);
 	
-	app.controller('movementController', ['$scope', '$location', '$anchorScroll', function ($scope, $location, $anchorScroll) {
-	    $scope.currentRoom = '';
 	    $scope.scrollDown = function () {
 	        $location.hash('bottom');
 	        $anchorScroll();
 	    };
+	}]);
+	
+	app.controller('movementController', ['$scope', function ($scope) {
+	    $scope.currentRoom = '';
+	
 	    $scope.buttonClicked = function (cmd) {
-	        // console.log(cmd);
-	        // console.log(player);
-	        // console.log($scope.playerHistory);
-	        $scope.playerHistory.push($scope.player.action(cmd));
+	        // console.log('$scope.player.location.items', $scope.player.location.items);
+	        $scope.playerHistory.push($scope.player.action({ command: 'go', direction: cmd }));
+	        $scope.scrollDown();
+	        console.log('player after moving', $scope.player);
+	        console.log('items in room', $scope.player.location.items);
+	    };
+	}]);
+	
+	app.controller('itemController', ['$scope', function ($scope) {
+	    console.log('the items in this room', $scope.player.location.items);
+	
+	    $scope.buttonClicked = function (cmd) {
+	        var itemName = void 0;
+	        if (cmd === 'take') {
+	            itemName = $scope.player.location.items.length ? $scope.player.location.items[0] : { name: 'nothing' };
+	        } else {
+	            itemName = $scope.player.inventory.length ? $scope.player.inventory[0] : { name: 'nothing' };
+	        };
+	        $scope.playerHistory.push($scope.player.action({ command: cmd, item: itemName }));
 	        $scope.scrollDown();
 	    };
 	}]);
 	
 	exports.default = app;
-	// module.exports = app;
 
 /***/ },
 /* 1 */
@@ -32548,6 +32562,7 @@
 	    connect(rooms.startRoom, 'n', rooms.finalRoom);
 	    connect(rooms.startRoom, 's', rooms.storeRoom);
 	    rooms.storeRoom.items.push(items);
+	    // console.log('storeRoom items', rooms.storeRoom.items);
 	    items.location = _room2.default.storeRoom;
 	    players.location = _room2.default.startRoom;
 	};
@@ -32555,7 +32570,7 @@
 	buildGame(_room2.default, _player2.default, _item2.default);
 	
 	// console.log(room);
-	// console.log(player);
+	// console.log('player', player);
 	// console.log(item);
 	
 	// module.exports = {room, item, player};
@@ -32574,7 +32589,7 @@
 	    value: true
 	});
 	var item = {
-	    name: 'Baseball bat',
+	    name: 'baseball-bat',
 	    location: {}
 	};
 	
@@ -32590,8 +32605,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	// import Room from './room';
-	// const Room = require('./room');
 	
 	var thePlayer = {
 	    inventory: [],
@@ -32599,29 +32612,48 @@
 	
 	    action: function action(actions) {
 	        var message = '';
-	        var cmd = actions.split(' ');
-	        var theAction = cmd[0];
+	        var theAction = actions.command;
+	        var item = actions.item;
+	        var direction = actions.direction;
+	        console.log('the command:', theAction);
+	        console.log('the item is:', item);
+	        console.log('the direction is:', direction);
+	
+	        console.log('The Action is', theAction);
 	
 	        if (theAction === 'take') {
-	            var itemName = cmd[1];
-	            this.inventory.push(itemName);
-	            message = 'You added ' + itemName + ' to your inventory.';
-	        } else if (theAction === 'drop') {
-	            var _itemName = cmd[1];
-	            if (_itemName.toLowerCase() === 'all') {
-	                this.inventory = [];
-	                message = 'You dropped all your inventory.';
+	            var itemName = item.name;
+	            if (itemName === 'nothing') {
+	                message = 'There is nothing to take in here, IDIOT!';
 	            } else {
-	                var itemIdx = this.inventory.indexOf(_itemName);
-	                if (itemIdx > -1) this.inventory.splice(itemIdx, 1);
-	                message = 'You no longer have ' + _itemName + ' in your inventory';
+	                this.inventory.push(item);
+	                var itemIdx = this.location.items.indexOf(item);
+	                this.location.items.splice(itemIdx, 1);
+	                message = 'You added a ' + itemName + ' to your inventory.';
+	            };
+	        } else if (theAction === 'drop') {
+	            var _itemName = item.name;
+	            if (_itemName === 'nothing') {
+	                message = 'There is nothing to drop, IDIOT!';
+	            } else if (_itemName === 'all') {
+	                message = 'You dropped all your inventory.';
+	                this.location.items = this.inventory;
+	                this.inventory = [];
+	            } else {
+	                var _itemIdx = this.inventory.indexOf(item);
+	                if (_itemIdx > -1) {
+	                    var droppedItem = this.inventory.splice(_itemIdx, 1);
+	                    console.log('what got dropped:', droppedItem);
+	                    this.location.items.push(droppedItem[0]);
+	                    console.log('the room has:', this.location.items);
+	                };
+	                message = 'You no longer have a ' + _itemName + ' in your inventory.';
 	            };
 	        } else if (theAction === 'use') {
-	            message = 'You are using the ' + cmd[1] + '.';
+	            message = 'You are using the ' + item.name + '.';
 	        } else if (theAction === 'go') {
-	            var response = this.location.move(cmd[1]);
+	            var response = this.location.move(direction);
 	            if (response.room) this.location = response.room;
-	            // this.location = response.room;
 	            message = response.text;
 	        };
 	        return message;
@@ -32668,8 +32700,8 @@
 	                return response;
 	            } else {
 	                response.text = this[direction].desc;
-	                if (this.items.length) {
-	                    response.text += '\n You find a ' + this.items[0].name + '.';
+	                if (this[direction].items.length) {
+	                    response.text += '\n You find a ' + this[direction].items[0].name + '.';
 	                };
 	                return response;
 	            };
@@ -32683,17 +32715,17 @@
 	
 	Room.startRoom = new Room({
 	    name: 'Starting Room',
-	    desc: 'You are currently located in a a dimly lit room. There is a door to your north and to your south.'
+	    desc: 'You are currently located in a a dimly lit room. There is a door to the north and to the south.'
 	});
 	
 	Room.storeRoom = new Room({
 	    name: 'Store Room',
-	    desc: 'You are in a dusty room with lots of boxes strewn around. In the corner is a musty old baseball bat.'
+	    desc: 'You are in a dusty room with lots of boxes strewn around. The only door is to the north.'
 	});
 	
 	Room.finalRoom = new Room({
 	    name: 'Final Room',
-	    desc: 'Behold, Godzilla sits before you!'
+	    desc: 'Behold, Godzilla sits before you! The only escape is the door to the south.'
 	});
 	
 	exports.default = Room;
@@ -32709,37 +32741,37 @@
 	    allChoices: [{
 	        title: 'choiceNorth',
 	        name: 'Move North',
-	        command: 'go n',
+	        command: 'n',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceSouth',
 	        name: 'Move South',
-	        command: 'go s',
+	        command: 's',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceEast',
 	        name: 'Move East',
-	        command: 'go e',
+	        command: 'e',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceWest',
 	        name: 'Move West',
-	        command: 'go w',
+	        command: 'w',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceTakeItem',
 	        name: 'Take Item',
-	        command: 'take item',
+	        command: 'take',
 	        type: 'item'
 	    }, {
 	        title: 'choiceDropItem',
 	        name: 'Drop Item',
-	        command: 'drop item',
+	        command: 'drop',
 	        type: 'item'
 	    }, {
 	        title: 'choiceUseItem',
 	        name: 'Use Item',
-	        command: 'use item',
+	        command: 'use',
 	        type: 'item'
 	    }]
 	};
