@@ -32718,7 +32718,7 @@
 	
 	Room.startRoom = new Room({
 	    name: 'Starting Room',
-	    desc: 'You are currently located in a a dimly lit room. There is a door to the north, to the south and to the west.'
+	    desc: 'You are currently located in a a dimly lit room. There are doors to the north, the south and the west.'
 	});
 	
 	Room.storeRoom = new Room({
@@ -32728,7 +32728,7 @@
 	
 	Room.libraryRoom = new Room({
 	    name: 'Library',
-	    desc: 'You are in a room with lots of shelves with books lined up on them. There is one door to the east. There is a desk in the northwest corner with a book sitting on it, whose title is "Bedtime Stories".'
+	    desc: 'You are in a room with lots of shelves with scrolls lined up on them. There is one door to the east.'
 	});
 	
 	Room.finalRoom = new Room({
