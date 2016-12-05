@@ -64,40 +64,50 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// console.log(player);
-	
 	var app = _angular2.default.module('myApp', ['ng']);
 	
-	app.controller('myGame', ['$scope', function ($scope) {
+	app.controller('myGame', ['$scope', '$location', '$anchorScroll', function ($scope, $location, $anchorScroll) {
 	    $scope.player = _game.player;
 	    $scope.choices = _help2.default.allChoices;
 	    $scope.userMovement = $scope.choices.name;
 	    $scope.userItem = $scope.choices.name;
 	    $scope.newText = '';
 	    $scope.playerHistory = [];
-	    $scope.playerHistory.push('You are waking up after being unconcious....');
+	    $scope.playerHistory.push('You are waking up after being unconscious ...');
 	    $scope.playerHistory.push(_game.player.location.desc);
 	    $scope.room = _game.room;
 	    $scope.item = _game.item;
-	}]);
 	
-	app.controller('movementController', ['$scope', '$location', '$anchorScroll', function ($scope, $location, $anchorScroll) {
-	    $scope.currentRoom = '';
 	    $scope.scrollDown = function () {
 	        $location.hash('bottom');
 	        $anchorScroll();
 	    };
+	}]);
+	
+	app.controller('movementController', ['$scope', function ($scope) {
+	    $scope.currentRoom = '';
+	
 	    $scope.buttonClicked = function (cmd) {
-	        // console.log(cmd);
-	        // console.log(player);
-	        // console.log($scope.playerHistory);
-	        $scope.playerHistory.push($scope.player.action(cmd));
+	        $scope.playerHistory.push($scope.player.action({ command: 'go', direction: cmd }));
+	        $scope.scrollDown();
+	    };
+	}]);
+	
+	app.controller('itemController', ['$scope', function ($scope) {
+	
+	    $scope.buttonClicked = function (cmd) {
+	        var itemName = void 0;
+	        if (cmd === 'take') {
+	            itemName = $scope.player.location.items.length ? $scope.player.location.items[0] : { name: 'nothing' };
+	        } else {
+	            itemName = $scope.player.inventory.length ? $scope.player.inventory[0] : { name: 'nothing' };
+	        };
+	        $scope.playerHistory.push($scope.player.action({ command: cmd, item: itemName }));
 	        $scope.scrollDown();
 	    };
 	}]);
 	
 	exports.default = app;
-	// module.exports = app;
 
 /***/ },
 /* 1 */
@@ -32521,20 +32531,16 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// const item = require('./lib/item');
-	// const player = require('./lib/player');
-	// const room = require('./lib/room');
-	
 	function buildGame(rooms, players, items) {
 	    function opposite(direction) {
-	        if (direction === 'n') {
-	            return 's';
-	        } else if (direction === 's') {
-	            return 'n';
-	        } else if (direction === 'w') {
-	            return 'e';
-	        } else if (direction === 'e') {
-	            return 'w';
+	        if (direction === 'north') {
+	            return 'south';
+	        } else if (direction === 'south') {
+	            return 'north';
+	        } else if (direction === 'west') {
+	            return 'east';
+	        } else if (direction === 'east') {
+	            return 'west';
 	        } else {
 	            return null;
 	        };
@@ -32545,20 +32551,17 @@
 	        secondRoom[opposite(direction)] = firstRoom;
 	    };
 	
-	    connect(rooms.startRoom, 'n', rooms.finalRoom);
-	    connect(rooms.startRoom, 's', rooms.storeRoom);
-	    rooms.storeRoom.items.push(items);
-	    items.location = _room2.default.storeRoom;
+	    connect(rooms.startRoom, 'north', rooms.finalRoom);
+	    connect(rooms.startRoom, 'south', rooms.storeRoom);
+	    connect(rooms.startRoom, 'west', rooms.libraryRoom);
+	    rooms.storeRoom.items.push(items[0]);
+	    rooms.libraryRoom.items.push(items[1]);
+	    items[0].location = _room2.default.storeRoom;
+	    items[1].location = _room2.default.libraryRoom;
 	    players.location = _room2.default.startRoom;
 	};
 	
 	buildGame(_room2.default, _player2.default, _item2.default);
-	
-	// console.log(room);
-	// console.log(player);
-	// console.log(item);
-	
-	// module.exports = {room, item, player};
 	
 	exports.room = _room2.default;
 	exports.item = _item2.default;
@@ -32573,13 +32576,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var item = {
-	    name: 'Baseball bat',
+	var item = [{
+	    name: 'baseball-bat',
 	    location: {}
-	};
+	}, {
+	    name: 'book',
+	    location: {}
+	}];
 	
 	exports.default = item;
-	// module.exports = item;
 
 /***/ },
 /* 5 */
@@ -32590,8 +32595,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	// import Room from './room';
-	// const Room = require('./room');
 	
 	var thePlayer = {
 	    inventory: [],
@@ -32599,29 +32602,61 @@
 	
 	    action: function action(actions) {
 	        var message = '';
-	        var cmd = actions.split(' ');
-	        var theAction = cmd[0];
+	        var theAction = actions.command;
+	        var item = actions.item;
+	        var direction = actions.direction;
+	        // console.log('the command:', theAction);
+	        // console.log('the item is:', item);
+	        // console.log('the direction is:', direction);
+	
+	        // console.log('The Action is', theAction);
 	
 	        if (theAction === 'take') {
-	            var itemName = cmd[1];
-	            this.inventory.push(itemName);
-	            message = 'You added ' + itemName + ' to your inventory.';
-	        } else if (theAction === 'drop') {
-	            var _itemName = cmd[1];
-	            if (_itemName.toLowerCase() === 'all') {
-	                this.inventory = [];
-	                message = 'You dropped all your inventory.';
+	            var itemName = item.name;
+	            if (itemName === 'nothing') {
+	                message = 'There is nothing to take in here, IDIOT!';
 	            } else {
-	                var itemIdx = this.inventory.indexOf(_itemName);
-	                if (itemIdx > -1) this.inventory.splice(itemIdx, 1);
-	                message = 'You no longer have ' + _itemName + ' in your inventory';
+	                this.inventory.push(item);
+	                var itemIdx = this.location.items.indexOf(item);
+	                this.location.items.splice(itemIdx, 1);
+	                message = 'You added a ' + itemName + ' to your inventory.';
+	            };
+	        } else if (theAction === 'drop') {
+	            var _itemName = item.name;
+	            if (_itemName === 'nothing') {
+	                message = 'There is nothing to drop, IDIOT!';
+	            } else if (_itemName === 'all') {
+	                message = 'You dropped all your inventory.';
+	                this.location.items = this.inventory;
+	                this.inventory = [];
+	            } else {
+	                var _itemIdx = this.inventory.indexOf(item);
+	                if (_itemIdx > -1) {
+	                    var droppedItem = this.inventory.splice(_itemIdx, 1);
+	                    // console.log('what got dropped:', droppedItem);
+	                    this.location.items.push(droppedItem[0]);
+	                    // console.log('the room has:', this.location.items);
+	                };
+	                message = 'You no longer have a ' + _itemName + ' in your inventory.';
+	                if (this.location.name === 'Final Room') message += ' You had better pick it back up before Godzilla notices.';
 	            };
 	        } else if (theAction === 'use') {
-	            message = 'You are using the ' + cmd[1] + '.';
+	            if (this.location.name === 'Final Room') {
+	                if (item.name === 'nothing') {
+	                    message = 'You have nothing to use, IDIOT! You better run before Godzilla eats you.';
+	                } else {
+	                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla reaches for his phone to call the ASPCA.';
+	                };
+	            } else {
+	                if (item.name === 'nothing') {
+	                    message = 'You have nothing to use.';
+	                } else {
+	                    message = 'You are swinging the ' + item.name + ' by yourself in an empty room. Keep up the good work.';
+	                }
+	            }
 	        } else if (theAction === 'go') {
-	            var response = this.location.move(cmd[1]);
+	            var response = this.location.move(direction);
 	            if (response.room) this.location = response.room;
-	            // this.location = response.room;
 	            message = response.text;
 	        };
 	        return message;
@@ -32656,7 +32691,7 @@
 	            _this[element] = obj[element];
 	        }, this);
 	        this.items = [];
-	        this.n = this.s = this.e = this.w = null;
+	        this.north = this.south = this.east = this.west = null;
 	    }
 	
 	    _createClass(Room, [{
@@ -32668,8 +32703,8 @@
 	                return response;
 	            } else {
 	                response.text = this[direction].desc;
-	                if (this.items.length) {
-	                    response.text += '\n You find a ' + this.items[0].name + '.';
+	                if (this[direction].items.length) {
+	                    response.text += '\n You find a ' + this[direction].items[0].name + '.';
 	                };
 	                return response;
 	            };
@@ -32683,21 +32718,25 @@
 	
 	Room.startRoom = new Room({
 	    name: 'Starting Room',
-	    desc: 'You are currently located in a a dimly lit room. There is a door to your north and to your south.'
+	    desc: 'You are currently located in a a dimly lit room. There is a door to the north, to the south and to the west.'
 	});
 	
 	Room.storeRoom = new Room({
 	    name: 'Store Room',
-	    desc: 'You are in a dusty room with lots of boxes strewn around. In the corner is a musty old baseball bat.'
+	    desc: 'You are in a dusty room with lots of boxes strewn around. The only door is to the north.'
+	});
+	
+	Room.libraryRoom = new Room({
+	    name: 'Library',
+	    desc: 'You are in a room with lots of shelves with books lined up on them. There is one door to the east. There is a desk in the northwest corner with a book sitting on it, whose title is "Bedtime Stories".'
 	});
 	
 	Room.finalRoom = new Room({
 	    name: 'Final Room',
-	    desc: 'Behold, Godzilla sits before you!'
+	    desc: 'Behold, Godzilla sits before you! The only escape is the door to the south.'
 	});
 	
 	exports.default = Room;
-	// module.exports = Room;
 
 /***/ },
 /* 7 */
@@ -32709,37 +32748,37 @@
 	    allChoices: [{
 	        title: 'choiceNorth',
 	        name: 'Move North',
-	        command: 'go n',
+	        command: 'north',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceSouth',
 	        name: 'Move South',
-	        command: 'go s',
+	        command: 'south',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceEast',
 	        name: 'Move East',
-	        command: 'go e',
+	        command: 'east',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceWest',
 	        name: 'Move West',
-	        command: 'go w',
+	        command: 'west',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceTakeItem',
 	        name: 'Take Item',
-	        command: 'take item',
+	        command: 'take',
 	        type: 'item'
 	    }, {
 	        title: 'choiceDropItem',
 	        name: 'Drop Item',
-	        command: 'drop item',
+	        command: 'drop',
 	        type: 'item'
 	    }, {
 	        title: 'choiceUseItem',
 	        name: 'Use Item',
-	        command: 'use item',
+	        command: 'use',
 	        type: 'item'
 	    }]
 	};

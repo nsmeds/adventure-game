@@ -4,29 +4,50 @@ html, body, section {
     overflow: hidden;
 }
 
+body {
+    margin: 0px 8px;
+}
+
+html {
+    background-color: lightslategray;
+}
+
 section {
     display: flex;
     flex-direction: column;
 }
 
 hr {
-    height: 5px;
+    height: 0px;
+    width: 100%;
 }
 
 .sticky-header, .sticky-footer {
     flex: 0 0 auto;
+    background-color: steelblue;
+    text-align: center;
+    padding: 5px;
+    border: 1px white solid;
 }
 
 .sticky-header {
-    margin-top: 15px;
+    margin: 15px 0px;
+    color: white;
 }
 
 #textarea {
     height: calc(100% - 50px);
     overflow-y: scroll;
+    background-color: white;
+    padding: 5px;
 }
 
 #bottom-container {
     height: 1px;
-    margin-top: 40px;
+    padding-top: 40px;
+}
+
+p {
+    margin: 1em;
+    font-family: sans-serif;
 }
