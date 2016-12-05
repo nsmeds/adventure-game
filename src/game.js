@@ -28,9 +28,11 @@ function buildGame(rooms, players, items) {
 
     connect(rooms.startRoom, 'north', rooms.finalRoom);
     connect(rooms.startRoom, 'south', rooms.storeRoom);
-    rooms.storeRoom.items.push(items);
+    rooms.storeRoom.items.push(items[0]);
+    rooms.newRoom.items.push(items[1]);
     // console.log('storeRoom items', rooms.storeRoom.items);
-    items.location = room.storeRoom;
+    items[0].location = room.storeRoom;
+    items[1].location = room.newRoom;
     players.location = room.startRoom;
 };
 
