@@ -1,28 +1,37 @@
 const {assert} = chai;
 
-describe('game controller', () => {
+describe('Tests module myApp', () => {
     beforeEach(angular.mock.module('myApp'));
 
     const mockRoomOne = {
-        n: null,
+        north: null,
         items: []
     };
 
     const mockRoomTwo = {
-        s: null,
-        items: [{name:'baseball bat', location: null}]
+        south: null,
+        items: []
     };
 
-    const mockItem = [{name:'baseball bat', location: mockRoomTwo}];
+    const mockItem = {name:'baseball bat', location: mockRoomTwo};
 
-    const mockPlayer = {
-        action: function(string) {
-            console.log(string);
-        }
+    let mockPlayer = {
+        action: function(actionPassed) {
+            assert.isOk(actionPassed);
+            if (actionPassed.command === 'take' && actionPassed.item.name !== 'nothing') {
+                this.inventory.push(actionPassed.item);
+            } else if (actionPassed.command === 'go') {
+                this.location = this.location[actionPassed.direction];
+            } else {
+                return;
+            };
+        },
+        inventory: [],
+        location: null
     };
 
-    mockRoomOne.n = mockRoomTwo;
-    mockRoomTwo.s = mockRoomOne;
+    mockRoomOne.north = mockRoomTwo;
+    mockRoomTwo.south = mockRoomOne;
     mockRoomTwo.items.push(mockItem);
 
     let $controller, $scope, $location, $anchorScroll;
@@ -33,25 +42,56 @@ describe('game controller', () => {
         $anchorScroll = _$anchorScroll_;
     }));
 
-    it('Checks initial player history is empty', () => {
-        $controller('myGame', {$scope, $location});
-        assert(Array.isArray($scope.playerHistory),'should initially be empty');
-        assert.equal($scope.playerHistory.length, 2);
-        assert($scope.room, 'is a function');
+    const setup = (scopeObject, player, location, action) => {
+        scopeObject.playerHistory = [];
+        scopeObject.scrollDown = () => { return true };
+        player.location = location;
+        scopeObject.player = player;
+        scopeObject.buttonClicked(action);
+        assert.equal(scopeObject.playerHistory.length, 1);
+        return scopeObject;
+    };
+
+    describe('Checks functionality of myGame controller', () => {  
+        it('Checks initial player history is empty', () => {
+            $controller('myGame', {$scope, $location, $anchorScroll});
+            assert(Array.isArray($scope.playerHistory),'should initially be empty');
+            assert.equal($scope.playerHistory.length, 2);
+            assert.isArray($scope.choices);
+        });
+
+        it('Checks scrollDown and Room can be called', () => {
+            $controller('myGame', {$scope, $location, $anchorScroll});
+            assert.isFunction($scope.room);
+            assert($scope.scrollDown, 'is a callable function');
+        });
     });
 
-    it('Checks current room and button click functionality', () => {
-        $controller('movementController', {$scope});
-        assert.equal($scope.currentRoom, '');
-        $scope.playerHistory = [];
-        $scope.scrollDown = function() {return true};
-        $scope.player = mockPlayer;
-        $scope.buttonClicked('Move South');
-        assert.equal($scope.playerHistory.length, 1);
-    });
+    describe('Checks functionality of movementController', () => {
+        it('Checks current room initiates as an empty string', () => {
+            $controller('movementController', {$scope});
+            assert.equal($scope.currentRoom, '');
+        });
 
-    // it('Checks controller itemController', () => {
-    //     $controller('itemController', {$scope});
-    //     $scope.buttonClicked('take');
-    // });
+        it('Checks buttonClick functionality gives directive to move in proper direction', () => {
+            $controller('movementController', {$scope});
+            $scope = setup($scope, mockPlayer, mockRoomOne, 'north');
+            assert.equal($scope.player.location, mockRoomTwo);
+        });
+    });
+    
+    describe('Checks functionality of itemController', () => {
+        it('Checks that take item in an empty room retrieves nothing', () => {
+            $controller('itemController', {$scope});
+            $scope = setup($scope, mockPlayer, mockRoomOne, 'take');
+            assert.equal($scope.player.inventory.length, 0);
+        });
+
+        it('Checks that player receives item when in a room with an item', () => {
+            $controller('itemController', {$scope});
+            $scope = setup($scope, mockPlayer, mockRoomTwo, 'take');
+            assert.equal($scope.player.inventory.length, 1);
+            assert.equal($scope.player.inventory[0].name, 'baseball bat');
+        });
+    });
 });

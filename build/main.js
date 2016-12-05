@@ -91,13 +91,13 @@
 	        // console.log('$scope.player.location.items', $scope.player.location.items);
 	        $scope.playerHistory.push($scope.player.action({ command: 'go', direction: cmd }));
 	        $scope.scrollDown();
-	        console.log('player after moving', $scope.player);
-	        console.log('items in room', $scope.player.location.items);
+	        // console.log('player after moving', $scope.player);
+	        // console.log('items in room', $scope.player.location.items);
 	    };
 	}]);
 	
 	app.controller('itemController', ['$scope', function ($scope) {
-	    console.log('the items in this room', $scope.player.location.items);
+	    // console.log('the items in this room', $scope.player.location.items);
 	
 	    $scope.buttonClicked = function (cmd) {
 	        var itemName = void 0;
@@ -32541,14 +32541,14 @@
 	
 	function buildGame(rooms, players, items) {
 	    function opposite(direction) {
-	        if (direction === 'n') {
-	            return 's';
-	        } else if (direction === 's') {
-	            return 'n';
-	        } else if (direction === 'w') {
-	            return 'e';
-	        } else if (direction === 'e') {
-	            return 'w';
+	        if (direction === 'north') {
+	            return 'south';
+	        } else if (direction === 'south') {
+	            return 'north';
+	        } else if (direction === 'west') {
+	            return 'east';
+	        } else if (direction === 'east') {
+	            return 'west';
 	        } else {
 	            return null;
 	        };
@@ -32559,8 +32559,8 @@
 	        secondRoom[opposite(direction)] = firstRoom;
 	    };
 	
-	    connect(rooms.startRoom, 'n', rooms.finalRoom);
-	    connect(rooms.startRoom, 's', rooms.storeRoom);
+	    connect(rooms.startRoom, 'north', rooms.finalRoom);
+	    connect(rooms.startRoom, 'south', rooms.storeRoom);
 	    rooms.storeRoom.items.push(items);
 	    // console.log('storeRoom items', rooms.storeRoom.items);
 	    items.location = _room2.default.storeRoom;
@@ -32615,11 +32615,11 @@
 	        var theAction = actions.command;
 	        var item = actions.item;
 	        var direction = actions.direction;
-	        console.log('the command:', theAction);
-	        console.log('the item is:', item);
-	        console.log('the direction is:', direction);
+	        // console.log('the command:', theAction);
+	        // console.log('the item is:', item);
+	        // console.log('the direction is:', direction);
 	
-	        console.log('The Action is', theAction);
+	        // console.log('The Action is', theAction);
 	
 	        if (theAction === 'take') {
 	            var itemName = item.name;
@@ -32643,14 +32643,27 @@
 	                var _itemIdx = this.inventory.indexOf(item);
 	                if (_itemIdx > -1) {
 	                    var droppedItem = this.inventory.splice(_itemIdx, 1);
-	                    console.log('what got dropped:', droppedItem);
+	                    // console.log('what got dropped:', droppedItem);
 	                    this.location.items.push(droppedItem[0]);
-	                    console.log('the room has:', this.location.items);
+	                    // console.log('the room has:', this.location.items);
 	                };
 	                message = 'You no longer have a ' + _itemName + ' in your inventory.';
+	                if (this.location.name === 'Final Room') message += ' You had better pick it back up before Godzilla notices.';
 	            };
 	        } else if (theAction === 'use') {
-	            message = 'You are using the ' + item.name + '.';
+	            if (this.location.name === 'Final Room') {
+	                if (item.name === 'nothing') {
+	                    message = 'You have nothing to use, IDIOT! You better run before Godzilla eats you.';
+	                } else {
+	                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla reaches for his phone to call the ASPCA.';
+	                };
+	            } else {
+	                if (item.name === 'nothing') {
+	                    message = 'You have nothing to use.';
+	                } else {
+	                    message = 'You are swinging the ' + item.name + ' by yourself in an empty room. Keep up the good work.';
+	                }
+	            }
 	        } else if (theAction === 'go') {
 	            var response = this.location.move(direction);
 	            if (response.room) this.location = response.room;
@@ -32688,7 +32701,7 @@
 	            _this[element] = obj[element];
 	        }, this);
 	        this.items = [];
-	        this.n = this.s = this.e = this.w = null;
+	        this.north = this.south = this.east = this.west = null;
 	    }
 	
 	    _createClass(Room, [{
@@ -32741,22 +32754,22 @@
 	    allChoices: [{
 	        title: 'choiceNorth',
 	        name: 'Move North',
-	        command: 'n',
+	        command: 'north',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceSouth',
 	        name: 'Move South',
-	        command: 's',
+	        command: 'south',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceEast',
 	        name: 'Move East',
-	        command: 'e',
+	        command: 'east',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceWest',
 	        name: 'Move West',
-	        command: 'w',
+	        command: 'west',
 	        type: 'movement'
 	    }, {
 	        title: 'choiceTakeItem',
