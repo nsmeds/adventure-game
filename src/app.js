@@ -12,7 +12,7 @@ app.controller('myGame', ['$scope', '$location', '$anchorScroll', function($scop
     $scope.userItem = $scope.choices.name;
     $scope.newText = '';
     $scope.playerHistory = [];
-    $scope.playerHistory.push('You are waking up after being unconscious....');
+    $scope.playerHistory.push('You are waking up after being unconscious ...');
     $scope.playerHistory.push(player.location.desc);
     $scope.room = room;
     $scope.item = item;
