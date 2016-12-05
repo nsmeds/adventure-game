@@ -4,6 +4,10 @@ html, body, section {
     overflow: hidden;
 }
 
+body {
+    margin: 0px 8px;
+}
+
 html {
     background-color: lightslategray;
 }

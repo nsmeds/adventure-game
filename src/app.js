@@ -31,14 +31,14 @@ app.controller('movementController', ['$scope', function($scope) {
         // console.log('$scope.player.location.items', $scope.player.location.items);
         $scope.playerHistory.push($scope.player.action({command: 'go', direction: cmd}));
         $scope.scrollDown();
-        console.log('player after moving', $scope.player);
-        console.log('items in room', $scope.player.location.items);
+        // console.log('player after moving', $scope.player);
+        // console.log('items in room', $scope.player.location.items);
     };
 
 }]);
 
 app.controller('itemController', ['$scope', function($scope) {
-    console.log('the items in this room', $scope.player.location.items);
+    // console.log('the items in this room', $scope.player.location.items);
 
     $scope.buttonClicked = function(cmd){
         let itemName;
