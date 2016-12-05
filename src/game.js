@@ -2,10 +2,6 @@ import item from './lib/item';
 import player from './lib/player';
 import room from './lib/room';
 
-// const item = require('./lib/item');
-// const player = require('./lib/player');
-// const room = require('./lib/room');
-
 function buildGame(rooms, players, items) {
     function opposite(direction) {
         if (direction === 'north') {
@@ -28,18 +24,14 @@ function buildGame(rooms, players, items) {
 
     connect(rooms.startRoom, 'north', rooms.finalRoom);
     connect(rooms.startRoom, 'south', rooms.storeRoom);
-    rooms.storeRoom.items.push(items);
-    // console.log('storeRoom items', rooms.storeRoom.items);
-    items.location = room.storeRoom;
+    connect(rooms.startRoom, 'west', rooms.libraryRoom);
+    rooms.storeRoom.items.push(items[0]);
+    rooms.libraryRoom.items.push(items[1]);
+    items[0].location = room.storeRoom;
+    items[1].location = room.libraryRoom;
     players.location = room.startRoom;
 };
 
 buildGame(room, player, item);
-
-// console.log(room);
-// console.log('player', player);
-// console.log(item);
-
-// module.exports = {room, item, player};
 
 export {room, item, player};

@@ -73,7 +73,7 @@
 	    $scope.userItem = $scope.choices.name;
 	    $scope.newText = '';
 	    $scope.playerHistory = [];
-	    $scope.playerHistory.push('You are waking up after being unconscious....');
+	    $scope.playerHistory.push('You are waking up after being unconscious ...');
 	    $scope.playerHistory.push(_game.player.location.desc);
 	    $scope.room = _game.room;
 	    $scope.item = _game.item;
@@ -88,16 +88,12 @@
 	    $scope.currentRoom = '';
 	
 	    $scope.buttonClicked = function (cmd) {
-	        // console.log('$scope.player.location.items', $scope.player.location.items);
 	        $scope.playerHistory.push($scope.player.action({ command: 'go', direction: cmd }));
 	        $scope.scrollDown();
-	        // console.log('player after moving', $scope.player);
-	        // console.log('items in room', $scope.player.location.items);
 	    };
 	}]);
 	
 	app.controller('itemController', ['$scope', function ($scope) {
-	    // console.log('the items in this room', $scope.player.location.items);
 	
 	    $scope.buttonClicked = function (cmd) {
 	        var itemName = void 0;
@@ -32535,10 +32531,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// const item = require('./lib/item');
-	// const player = require('./lib/player');
-	// const room = require('./lib/room');
-	
 	function buildGame(rooms, players, items) {
 	    function opposite(direction) {
 	        if (direction === 'north') {
@@ -32561,19 +32553,15 @@
 	
 	    connect(rooms.startRoom, 'north', rooms.finalRoom);
 	    connect(rooms.startRoom, 'south', rooms.storeRoom);
-	    rooms.storeRoom.items.push(items);
-	    // console.log('storeRoom items', rooms.storeRoom.items);
-	    items.location = _room2.default.storeRoom;
+	    connect(rooms.startRoom, 'west', rooms.libraryRoom);
+	    rooms.storeRoom.items.push(items[0]);
+	    rooms.libraryRoom.items.push(items[1]);
+	    items[0].location = _room2.default.storeRoom;
+	    items[1].location = _room2.default.libraryRoom;
 	    players.location = _room2.default.startRoom;
 	};
 	
 	buildGame(_room2.default, _player2.default, _item2.default);
-	
-	// console.log(room);
-	// console.log('player', player);
-	// console.log(item);
-	
-	// module.exports = {room, item, player};
 	
 	exports.room = _room2.default;
 	exports.item = _item2.default;
@@ -32588,13 +32576,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var item = {
+	var item = [{
 	    name: 'baseball-bat',
 	    location: {}
-	};
+	}, {
+	    name: 'book',
+	    location: {}
+	}];
 	
 	exports.default = item;
-	// module.exports = item;
 
 /***/ },
 /* 5 */
@@ -32728,12 +32718,17 @@
 	
 	Room.startRoom = new Room({
 	    name: 'Starting Room',
-	    desc: 'You are currently located in a a dimly lit room. There is a door to the north and to the south.'
+	    desc: 'You are currently located in a a dimly lit room. There are doors to the north, the south and the west.'
 	});
 	
 	Room.storeRoom = new Room({
 	    name: 'Store Room',
 	    desc: 'You are in a dusty room with lots of boxes strewn around. The only door is to the north.'
+	});
+	
+	Room.libraryRoom = new Room({
+	    name: 'Library',
+	    desc: 'You are in a room with lots of shelves with scrolls lined up on them. There is one door to the east.'
 	});
 	
 	Room.finalRoom = new Room({
@@ -32742,7 +32737,6 @@
 	});
 	
 	exports.default = Room;
-	// module.exports = Room;
 
 /***/ },
 /* 7 */

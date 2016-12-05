@@ -1,7 +1,12 @@
-const item = {
-    name: 'baseball-bat',
-    location: {}
-};
+const item = [
+    {
+        name: 'baseball-bat',
+        location: {}
+    },
+    {
+        name: 'book',
+        location: {}
+    }
+];
 
 export default item;
-// module.exports = item;
