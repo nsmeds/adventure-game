@@ -2,17 +2,21 @@
 const thePlayer = {
     inventory: [],
     location: {},
+    status: 'alive',
 
     action(actions){
         let message = '';
         let theAction = actions.command;
         let item = actions.item;
         let direction = actions.direction;
-        // console.log('the command:', theAction);
-        // console.log('the item is:', item);
-        // console.log('the direction is:', direction);
 
-        // console.log('The Action is', theAction);
+        let dropItem = () => {
+            let itemIdx = this.inventory.indexOf(item);
+            if (itemIdx > -1) {
+                let droppedItem = this.inventory.splice(itemIdx, 1);
+                this.location.items.push(droppedItem[0]);
+            };
+        };
 
         if (theAction === 'take') {
             let itemName = item.name;
@@ -33,22 +37,19 @@ const thePlayer = {
                 this.location.items = this.inventory;
                 this.inventory = [];
             } else {
-                let itemIdx = this.inventory.indexOf(item);
-                if (itemIdx > -1) {
-                    let droppedItem = this.inventory.splice(itemIdx, 1);
-                    // console.log('what got dropped:', droppedItem);
-                    this.location.items.push(droppedItem[0]);
-                    // console.log('the room has:', this.location.items);
-                };
+                dropItem();
                 message = 'You no longer have a ' + itemName + ' in your inventory.';
                 if (this.location.name === 'Final Room') message += ' You had better pick it back up before Godzilla notices.'; 
             };
         } else if (theAction === 'use') {
             if (this.location.name === 'Final Room') {
                 if (item.name === 'nothing') {
-                    message = 'You have nothing to use, IDIOT! You better run before Godzilla eats you.'; 
+                    message = 'Having no weapon, you wave your arms wildly at Godzilla as if to say, "Here I am - please eat me!"';
+                    message += ' Godzilla eats you.'; 
+                    this.status = 'dead';
                 } else {
-                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla reaches for his phone to call the ASPCA.';
+                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla gets angry and kills you.';
+                    this.status = 'dead';
                 };
             } else {
                 if (item.name === 'nothing') {
@@ -62,6 +63,9 @@ const thePlayer = {
             if (response.room) this.location = response.room;
             message = response.text;
         };
+        if (status === 'dead') {
+            message += ' You are dead. The end.';
+        }
         return message;
     }
 };
