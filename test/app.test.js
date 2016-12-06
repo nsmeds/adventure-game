@@ -44,7 +44,7 @@ describe('Tests module myApp', () => {
 
     const setup = (scopeObject, player, location, action) => {
         scopeObject.playerHistory = [];
-        scopeObject.scrollDown = () => { return true };
+        scopeObject.scrollDown = () => { return true; };
         player.location = location;
         scopeObject.player = player;
         scopeObject.buttonClicked(action);

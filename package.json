@@ -4,7 +4,7 @@
   "description": "just another adventure game",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "eslint . && karma start",
     "start": "webpack-dev-server --inline",
     "build": "webpack",
     "karma": "karma start"
