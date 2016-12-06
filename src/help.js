@@ -46,5 +46,4 @@ const helpOpts = {
     ]
 };
 
-// export default helpOpts;
 module.exports = helpOpts;

@@ -63,13 +63,12 @@ const thePlayer = {
             if (response.room) this.location = response.room;
             message = response.text;
         };
-        if (status === 'dead') {
+        if (this.status === 'dead') {
             message += ' You are dead. The end.';
+            dropItem();
         }
         return message;
     }
 };
 
 export default thePlayer;
-
-// module.exports = thePlayer;
