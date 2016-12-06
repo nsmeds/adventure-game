@@ -30,14 +30,12 @@ app.controller('myGame', ['$scope', '$location', '$anchorScroll', function($scop
 app.controller('movementController', ['$scope', function($scope) {
     $scope.currentRoom = '';
     $scope.buttonClicked = function(cmd){
-        $scope.playerStatus = $scope.player.status;
         $scope.playerHistory.push($scope.player.action({command: 'go', direction: cmd}));
         $scope.scrollDown();
     };
 }]);
 
 app.controller('itemController', ['$scope', function($scope) {
-    // $scope.playerStatus = player.status;
     $scope.buttonClicked = function(cmd){
         let itemName;
         if (cmd === 'take') {
