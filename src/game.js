@@ -30,7 +30,6 @@ function buildGame(rooms, players, items) {
     items[0].location = room.storeRoom;
     items[1].location = room.libraryRoom;
     players.location = room.startRoom;
-    // players.status = player.status;
 };
 
 buildGame(room, player, item);

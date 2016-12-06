@@ -7,8 +7,6 @@ const app = angular.module('myApp', ['ng']);
 
 app.controller('myGame', ['$scope', '$location', '$anchorScroll', function($scope, $location, $anchorScroll) {
     $scope.player = player;
-    // $scope.player.status = player.status;
-    // console.log(player.status);
     $scope.playerStatus = player.status;
     $scope.choices = actions.allChoices;
     $scope.userMovement = $scope.choices.name;
@@ -45,12 +43,14 @@ app.controller('itemController', ['$scope', function($scope) {
         };
         $scope.playerHistory.push($scope.player.action({command: cmd, item: itemName}));
         $scope.playerStatus = $scope.player.status;
+        if ($scope.playerStatus === 'dead') {
+            document.getElementById('bottom-container').insertAdjacentHTML('beforebegin', '<img class="godzilla" width="300px" src="src/assets/godzilla.gif">');
+        }
         $scope.scrollDown();
     };
 }]);
 
 app.controller('reloadController', ['$scope', function($scope) {
-    // $scope.playerStatus = player.status;
     $scope.playerStatus = $scope.player.status;
     $scope.reload = function() {
         window.location.reload();
