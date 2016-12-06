@@ -27,8 +27,8 @@ module.exports = function(config) {
     if (process.env.TRAVIS) {
         configuration.customLaunchers = {
             Chrome_travis_ci: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
+                base: 'Chrome',
+                flags: ['--no-sandbox']
             }
         };
         configuration.browsers = ['Chrome_travis_ci', 'Firefox'];
