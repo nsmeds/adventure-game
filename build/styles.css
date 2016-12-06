@@ -51,4 +51,12 @@ p {
     margin: 1em;
     font-family: sans-serif;
 }
+
+.alive {
+    visibility: visible;
+}
+
+.dead {
+    visibility: hidden;
+}
 /*# sourceMappingURL=styles.css.map*/

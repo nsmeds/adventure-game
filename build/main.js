@@ -68,6 +68,9 @@
 	
 	app.controller('myGame', ['$scope', '$location', '$anchorScroll', function ($scope, $location, $anchorScroll) {
 	    $scope.player = _game.player;
+	    // $scope.player.status = player.status;
+	    // console.log(player.status);
+	    $scope.playerStatus = _game.player.status;
 	    $scope.choices = _help2.default.allChoices;
 	    $scope.userMovement = $scope.choices.name;
 	    $scope.userItem = $scope.choices.name;
@@ -86,7 +89,6 @@
 	
 	app.controller('movementController', ['$scope', function ($scope) {
 	    $scope.currentRoom = '';
-	
 	    $scope.buttonClicked = function (cmd) {
 	        $scope.playerHistory.push($scope.player.action({ command: 'go', direction: cmd }));
 	        $scope.scrollDown();
@@ -94,7 +96,6 @@
 	}]);
 	
 	app.controller('itemController', ['$scope', function ($scope) {
-	
 	    $scope.buttonClicked = function (cmd) {
 	        var itemName = void 0;
 	        if (cmd === 'take') {
@@ -103,7 +104,16 @@
 	            itemName = $scope.player.inventory.length ? $scope.player.inventory[0] : { name: 'nothing' };
 	        };
 	        $scope.playerHistory.push($scope.player.action({ command: cmd, item: itemName }));
+	        $scope.playerStatus = $scope.player.status;
 	        $scope.scrollDown();
+	    };
+	}]);
+	
+	app.controller('reloadController', ['$scope', function ($scope) {
+	    // $scope.playerStatus = player.status;
+	    $scope.playerStatus = $scope.player.status;
+	    $scope.reload = function () {
+	        window.location.reload();
 	    };
 	}]);
 	
@@ -32559,6 +32569,7 @@
 	    items[0].location = _room2.default.storeRoom;
 	    items[1].location = _room2.default.libraryRoom;
 	    players.location = _room2.default.startRoom;
+	    // players.status = player.status;
 	};
 	
 	buildGame(_room2.default, _player2.default, _item2.default);
@@ -32599,17 +32610,23 @@
 	var thePlayer = {
 	    inventory: [],
 	    location: {},
+	    status: 'alive',
 	
 	    action: function action(actions) {
+	        var _this = this;
+	
 	        var message = '';
 	        var theAction = actions.command;
 	        var item = actions.item;
 	        var direction = actions.direction;
-	        // console.log('the command:', theAction);
-	        // console.log('the item is:', item);
-	        // console.log('the direction is:', direction);
 	
-	        // console.log('The Action is', theAction);
+	        var dropItem = function dropItem() {
+	            var itemIdx = _this.inventory.indexOf(item);
+	            if (itemIdx > -1) {
+	                var droppedItem = _this.inventory.splice(itemIdx, 1);
+	                _this.location.items.push(droppedItem[0]);
+	            };
+	        };
 	
 	        if (theAction === 'take') {
 	            var itemName = item.name;
@@ -32630,22 +32647,19 @@
 	                this.location.items = this.inventory;
 	                this.inventory = [];
 	            } else {
-	                var _itemIdx = this.inventory.indexOf(item);
-	                if (_itemIdx > -1) {
-	                    var droppedItem = this.inventory.splice(_itemIdx, 1);
-	                    // console.log('what got dropped:', droppedItem);
-	                    this.location.items.push(droppedItem[0]);
-	                    // console.log('the room has:', this.location.items);
-	                };
+	                dropItem();
 	                message = 'You no longer have a ' + _itemName + ' in your inventory.';
 	                if (this.location.name === 'Final Room') message += ' You had better pick it back up before Godzilla notices.';
 	            };
 	        } else if (theAction === 'use') {
 	            if (this.location.name === 'Final Room') {
 	                if (item.name === 'nothing') {
-	                    message = 'You have nothing to use, IDIOT! You better run before Godzilla eats you.';
+	                    message = 'Having no weapon, you wave your arms wildly at Godzilla as if to say, "Here I am - please eat me!"';
+	                    message += ' Godzilla eats you.';
+	                    this.status = 'dead';
 	                } else {
-	                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla reaches for his phone to call the ASPCA.';
+	                    message = 'You hit Godzilla with the ' + item.name + '! Ouch! Godzilla gets angry and kills you.';
+	                    this.status = 'dead';
 	                };
 	            } else {
 	                if (item.name === 'nothing') {
@@ -32659,6 +32673,9 @@
 	            if (response.room) this.location = response.room;
 	            message = response.text;
 	        };
+	        if (status === 'dead') {
+	            message += ' You are dead. The end.';
+	        }
 	        return message;
 	    }
 	};
