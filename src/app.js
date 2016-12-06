@@ -7,6 +7,9 @@ const app = angular.module('myApp', ['ng']);
 
 app.controller('myGame', ['$scope', '$location', '$anchorScroll', function($scope, $location, $anchorScroll) {
     $scope.player = player;
+    // $scope.player.status = player.status;
+    // console.log(player.status);
+    $scope.playerStatus = player.status;
     $scope.choices = actions.allChoices;
     $scope.userMovement = $scope.choices.name;
     $scope.userItem = $scope.choices.name;
@@ -26,16 +29,13 @@ app.controller('myGame', ['$scope', '$location', '$anchorScroll', function($scop
 
 app.controller('movementController', ['$scope', function($scope) {
     $scope.currentRoom = '';
-
     $scope.buttonClicked = function(cmd){
         $scope.playerHistory.push($scope.player.action({command: 'go', direction: cmd}));
         $scope.scrollDown();
     };
-
 }]);
 
 app.controller('itemController', ['$scope', function($scope) {
-
     $scope.buttonClicked = function(cmd){
         let itemName;
         if (cmd === 'take') {
@@ -44,7 +44,16 @@ app.controller('itemController', ['$scope', function($scope) {
             itemName = $scope.player.inventory.length ? $scope.player.inventory[0] : {name: 'nothing'};
         };
         $scope.playerHistory.push($scope.player.action({command: cmd, item: itemName}));
+        $scope.playerStatus = $scope.player.status;
         $scope.scrollDown();
+    };
+}]);
+
+app.controller('reloadController', ['$scope', function($scope) {
+    // $scope.playerStatus = player.status;
+    $scope.playerStatus = $scope.player.status;
+    $scope.reload = function() {
+        window.location.reload();
     };
 }]);
 

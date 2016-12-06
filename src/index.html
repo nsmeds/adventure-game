@@ -17,11 +17,14 @@
         <div class="sticky-footer">
             <div ng-controller="movementController">
                 <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
-                ng-model="userMovement" ng-hide="action.type === 'item'" ng-repeat="action in choices">{{action.name}}</button>
+                ng-model="userMovement" ng-hide="action.type === 'item'" ng-if="player.status === 'alive'" ng-repeat="action in choices">{{action.name}}</button>
             </div>
             <div ng-controller="itemController">
                 <button type="button" id="{{action.title}}" ng-click="buttonClicked(action.command)"
-                ng-model="userItem" ng-hide="action.type === 'movement'" ng-repeat="action in choices">{{action.name}}</button>
+                ng-model="userItem" ng-hide="action.type === 'movement'" ng-if="player.status === 'alive'" ng-repeat="action in choices">{{action.name}}</button>
+            </div>
+            <div ng-controller="reloadController">
+                <button type="button" id="reload-button" ng-model="playerStatus" ng-if="player.status === 'dead'" ng-click="reload()">Start Over</button>
             </div>
         </div>
     </section>
